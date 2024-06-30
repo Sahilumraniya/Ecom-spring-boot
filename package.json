@@ -1,0 +1,17 @@
+{
+	"name": "ecoms",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build": "tailwindcss -i src/main/resources/static/css/tailwind.css -o src/main/resources/static/css/output.css",
+		"watch": "tailwindcss -i src/main/resources/static/css/tailwind.css --watch -o src/main/resources/static/css/output.css"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"autoprefixer": "^10.4.19",
+		"tailwindcss": "^3.4.3"
+	}
+}
