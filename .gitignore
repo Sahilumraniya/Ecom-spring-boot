@@ -33,6 +33,7 @@ build/
 .project
 mvnw   
 mvnw.cmd
+/src/main/resources/application.properties
 
 ### VS Code ###
 .vscode/
