@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
 <link href="/css/output.css" rel="stylesheet">
+<script defer src="/javascript/login.js"></script>
 <title>VerifyOtp</title>
 </head>
 <body class="bg-gray-900 text-white">
@@ -14,16 +16,17 @@
 			class="bg-white bg-opacity-10 backdrop-blur-lg border border-gray-300 rounded-lg shadow-lg p-8 max-w-md w-full">
 			<h2 class="text-3xl font-bold text-blue-500 mb-6 text-center">Update
 				Password</h2>
-			<form action="/update-password" method="post" class="space-y-6">
+			<form action="/verifyOtp" method="post" class="space-y-6">
 				<div>
-					<label for="email" class="block text-sm font-medium">Email</label>
-					<input type="email" id="email" name="email" required value="${email }" disabled="disabled"
+<!-- 					<label for="email" class="block text-sm font-medium">Email</label> -->
+					<input type="email" id="email" name="email" required
+						value="${email }" hidden="true"
 						class="w-full mt-1 p-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
 				</div>
 				<div>
 					<label for="new-password" class="block text-sm font-medium">New
 						Password</label> <input type="password" id="new-password"
-						name="new-password" required
+						name="password" required
 						class="w-full mt-1 p-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
 				</div>
 				<div>
@@ -36,6 +39,22 @@
 					Password</button>
 			</form>
 		</div>
+		<c:if test="${not empty error}">
+			<div id="error-dialog"
+				class="hidden fixed bottom-4 left-4 z-50 p-4 bg-red-600 text-white rounded shadow-lg max-w-sm w-full">
+				<div class="flex justify-between items-center">
+					<p id="error-text">${error }</p>
+					<button onclick="closeDialog()" class="text-white">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6"
+							fill="none" viewBox="0 0 24 24" stroke="currentColor"
+							stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+								d="M6 18L18 6M6 6l12 12" />
+                </svg>
+					</button>
+				</div>
+			</div>
+		</c:if>
 	</div>
 </body>
 </html>

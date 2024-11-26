@@ -12,6 +12,8 @@ import com.ecom.bean.UserBean;
 import com.ecom.dao.UserDao;
 import com.ecom.service.OtpService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class SessionController {
 
@@ -40,13 +42,19 @@ public class SessionController {
 	}
 
 	@GetMapping("/logout")
-	public String logout() {
+	public String logout(HttpSession session) {
+		session.setAttribute("user", null);
 		return "redirect:/login";
 	}
 
 	@GetMapping("/forgetpassword")
 	public String forgetpassword() {
 		return "ForgetPassword";
+	}
+	
+	@GetMapping("/about")
+	public String aboutUs() {
+		return "AboutUs";
 	}
 
 	@PostMapping("/signup")
@@ -71,7 +79,7 @@ public class SessionController {
 	}
 
 	@PostMapping("/authenticate")
-	public String login(@RequestParam("email") String email, @RequestParam("password") String password, Model model) {
+	public String login(@RequestParam String email, @RequestParam String password, Model model,HttpSession session) {
 		try {
 			UserBean dbUser = userDao.getUser(email);
 			Boolean isRigthPassword = false;
@@ -83,13 +91,18 @@ public class SessionController {
 					return "Login";
 				}
 				if (dbUser.getRole().equals("ADMIN")) {
+					session.setAttribute("user", dbUser);
+					session.setAttribute("isAdmin", true);
 					// admin@12345
 					return "redirect:/dashboard";
 				} else if (dbUser.getRole().equals("CUSTOMER")) {
 //					model.addAttribute("user", dbUser);
 //					return "redirect:/home";
+					session.setAttribute("user", dbUser);
+					session.setAttribute("isAdmin", false);
+					session.setMaxInactiveInterval(36000);
 					model.addAttribute("name", dbUser.getFirstName());
-					return "Home";
+					return "redirect:/products";
 				} else {
 					return "Error";
 				}
@@ -104,7 +117,7 @@ public class SessionController {
 	}
 
 	@PostMapping("/sendOTP")
-	public String sendotp(@RequestParam("email") String email, Model model) {
+	public String sendotp(@RequestParam String email, Model model) {
 		try {
 			UserBean user = userDao.getUser(email);
 
@@ -114,8 +127,8 @@ public class SessionController {
 				
 				String otp = otpService.sendOtp(email);
 				System.out.println("OTP ::"+otp);
+				userDao.updateOtp(email, otp);
 				model.addAttribute("email", email);
-				model.addAttribute("otp", passwordEncode.encode(otp));
 				return "VerifyOtp";
 			} else {
 				model.addAttribute("error", "Email Not Found");
@@ -129,8 +142,19 @@ public class SessionController {
 	}
 	
 	@PostMapping("/verifyOtp")
-	public String verfiyotp(@RequestParam("email") String email,@RequestParam("password") String passowrd,@RequestParam("otp") String otp) {
-		
-		return "";
+	public String verfiyotp(UserBean user,Model model) {
+		try {
+			if(userDao.verfiyOtp(user.getEmail(),user.getOtp())) {
+				userDao.updatePassword(user.getEmail(), passwordEncode.encode(user.getPassword()));
+				return "redirect:/login";
+			}else {
+				model.addAttribute("error","Please try again password could not change yet");
+				return "VerifyOtp";
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("error","Some thing want wrong");
+			return "VerifyOtp";
+		}
 	}
 }

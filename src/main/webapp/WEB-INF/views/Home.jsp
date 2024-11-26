@@ -8,6 +8,7 @@
 <title>Home</title>
 </head>
 <body class="bg-gray-900 text-white">
+	<jsp:include page="Navbar.jsp" />
     <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
         <div class="bg-white bg-opacity-10 backdrop-blur-lg border border-gray-300 rounded-lg shadow-lg p-8 text-center max-w-md w-full">
             <h2 class="text-3xl font-bold text-blue-500 mb-4">Welcome</h2>
